@@ -38,6 +38,7 @@
 def is_prime(n):
     if n < 2:
         return False
+    # check for factors from 2 to the square root of n
     for i in range(2, int(n ** 0.5) + 1):
         if n % i == 0:
             return False
@@ -45,7 +46,10 @@ def is_prime(n):
 
 
 if __name__ == "__main__":
+    # Get user input and check if the number is prime
     num = int(input("Enter a number: "))
+
+    #Print the result based on the function's return value
     if is_prime(num):
         print(f"{num} is a prime number.")
     else:
