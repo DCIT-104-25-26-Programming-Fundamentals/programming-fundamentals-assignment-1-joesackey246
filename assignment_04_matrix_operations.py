@@ -60,6 +60,8 @@
 # YOUR CODE BELOW — remove the # symbols from the scaffold and fill it in
 # =============================================================================
 
+
+
 def read_matrix(name="matrix"):
     """Ask the user for dimensions and values, and return a 2D list."""
     rows = int(input(f"Enter number of rows for {name}: "))
@@ -118,7 +120,6 @@ def multiply_matrices(matrix_a, matrix_b):
     cols_a = len(matrix_a[0])
     cols_b = len(matrix_b[0])
 
-    # Result is rows_a x cols_b, initialized to zeros
     result = [[0 for _ in range(cols_b)] for _ in range(rows_a)]
 
     for i in range(rows_a):
