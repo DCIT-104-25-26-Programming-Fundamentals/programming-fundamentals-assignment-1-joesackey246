@@ -60,145 +60,105 @@
 # YOUR CODE BELOW — remove the # symbols from the scaffold and fill it in
 # =============================================================================
 
-# Function to read a matrix from the user
-def read_matrix(rows, cols):
+def read_matrix(name="matrix"):
+    """Ask the user for dimensions and values, and return a 2D list."""
+    rows = int(input(f"Enter number of rows for {name}: "))
+    cols = int(input(f"Enter number of columns for {name}: "))
+
     matrix = []
-
     for i in range(rows):
-        while True:
-            row = list(map(int, input(f"Enter row {i + 1}: ").split()))
-
-            if len(row) == cols:
-                matrix.append(row)
-                break
-            else:
-                print(f"Please enter exactly {cols} values.")
+        # Read one row as space-separated values, convert each to int
+        row_values = input(f"Enter row {i + 1}: ").split()
+        row = [int(val) for val in row_values]
+        matrix.append(row)
 
     return matrix
 
 
-# Function to display a matrix
-def display_matrix(matrix):
+def print_matrix(matrix, title="Matrix"):
+    """Display a matrix in a neat, aligned grid format."""
+    print(f"\n{title}:")
     for row in matrix:
-        for value in row:
-            print(f"{value:6}", end="")
-        print()
+        # Format each number with fixed width for alignment
+        print("  ".join(f"{val:>4}" for val in row))
 
 
-# Part A: Transpose a matrix
-def transpose_matrix(matrix):
+def transpose(matrix):
+    """Return the transpose of a matrix (rows become columns)."""
     rows = len(matrix)
     cols = len(matrix[0])
 
-    transpose = []
-
-    for j in range(cols):
-        new_row = []
-        for i in range(rows):
-            new_row.append(matrix[i][j])
-        transpose.append(new_row)
-
-    return transpose
-
-
-# Part B: Add two matrices
-def add_matrices(matrix1, matrix2):
-    rows = len(matrix1)
-    cols = len(matrix1[0])
-
-    result = []
+    # Create an empty cols x rows matrix filled with zeros
+    result = [[0 for _ in range(rows)] for _ in range(cols)]
 
     for i in range(rows):
-        row = []
         for j in range(cols):
-            row.append(matrix1[i][j] + matrix2[i][j])
-        result.append(row)
+            result[j][i] = matrix[i][j]
 
     return result
 
 
-# Part C: Multiply two matrices
-def multiply_matrices(A, B):
-    rows_A = len(A)
-    cols_A = len(A[0])
+def add_matrices(matrix_a, matrix_b):
+    """Return the element-wise sum of two same-sized matrices."""
+    rows = len(matrix_a)
+    cols = len(matrix_a[0])
 
-    rows_B = len(B)
-    cols_B = len(B[0])
+    result = [[0 for _ in range(cols)] for _ in range(rows)]
 
-    result = []
+    for i in range(rows):
+        for j in range(cols):
+            result[i][j] = matrix_a[i][j] + matrix_b[i][j]
 
-    for i in range(rows_A):
-        row = []
+    return result
 
-        for j in range(cols_B):
+
+def multiply_matrices(matrix_a, matrix_b):
+    """Return the matrix product A x B."""
+    rows_a = len(matrix_a)
+    cols_a = len(matrix_a[0])
+    cols_b = len(matrix_b[0])
+
+    # Result is rows_a x cols_b, initialized to zeros
+    result = [[0 for _ in range(cols_b)] for _ in range(rows_a)]
+
+    for i in range(rows_a):
+        for j in range(cols_b):
             total = 0
-
-            for k in range(cols_A):
-                total += A[i][k] * B[k][j]
-
-            row.append(total)
-
-        result.append(row)
+            for k in range(cols_a):
+                total += matrix_a[i][k] * matrix_b[k][j]
+            result[i][j] = total
 
     return result
 
 
-# ==========================
-# PART A: Transpose Matrix
-# ==========================
-print("PART A - Transpose Matrix")
+def main():
+    print("=== PART A: Transpose a Matrix ===")
+    matrix = read_matrix("the matrix")
+    print_matrix(matrix, "Original Matrix")
+    print_matrix(transpose(matrix), "Transposed Matrix")
 
-rows = int(input("Enter number of rows: "))
-cols = int(input("Enter number of columns: "))
+    print("\n=== PART B: Add Two Matrices ===")
+    matrix_a = read_matrix("Matrix A")
+    matrix_b = read_matrix("Matrix B (must match Matrix A's size)")
 
-matrix = read_matrix(rows, cols)
+    if len(matrix_a) != len(matrix_b) or len(matrix_a[0]) != len(matrix_b[0]):
+        print("Error: Matrices must be the same size to add.")
+    else:
+        print_matrix(matrix_a, "Matrix A")
+        print_matrix(matrix_b, "Matrix B")
+        print_matrix(add_matrices(matrix_a, matrix_b), "Sum (A + B)")
 
-print("\nOriginal Matrix:")
-display_matrix(matrix)
+    print("\n=== PART C: Multiply Two Matrices ===")
+    matrix_c = read_matrix("Matrix A (size M x N)")
+    matrix_d = read_matrix("Matrix B (size N x P)")
 
-transposed = transpose_matrix(matrix)
-
-print("\nTransposed Matrix:")
-display_matrix(transposed)
-
-
-# ==========================
-# PART B: Add Two Matrices
-# ==========================
-print("\nPART B - Add Two Matrices")
-
-rows = int(input("Enter number of rows: "))
-cols = int(input("Enter number of columns: "))
-
-print("\nEnter Matrix 1")
-matrix1 = read_matrix(rows, cols)
-
-print("\nEnter Matrix 2")
-matrix2 = read_matrix(rows, cols)
-
-sum_matrix = add_matrices(matrix1, matrix2)
-
-print("\nResult of Addition:")
-display_matrix(sum_matrix)
+    if len(matrix_c[0]) != len(matrix_d):
+        print("Error: Number of columns in A must equal number of rows in B.")
+    else:
+        print_matrix(matrix_c, "Matrix A")
+        print_matrix(matrix_d, "Matrix B")
+        print_matrix(multiply_matrices(matrix_c, matrix_d), "Product (A x B)")
 
 
-# ==========================
-# PART C: Multiply Matrices
-# ==========================
-print("\nPART C - Multiply Two Matrices")
-
-m = int(input("Enter rows for Matrix A: "))
-n = int(input("Enter columns for Matrix A: "))
-
-print("\nEnter Matrix A")
-A = read_matrix(m, n)
-
-p = int(input("Enter columns for Matrix B: "))
-
-print("\nEnter Matrix B")
-B = read_matrix(n, p)
-
-product = multiply_matrices(A, B)
-
-print("\nResult of A × B:")
-display_matrix(product)
+if __name__ == "__main__":
+    main()
